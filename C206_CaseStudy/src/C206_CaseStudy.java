@@ -13,7 +13,6 @@ public class C206_CaseStudy {
 	public static boolean logoutStatus;
 	public static LocalDate today;
 
-
 	public static void main(String[] args) {
 
 		C206_CaseStudy cs = new C206_CaseStudy();
