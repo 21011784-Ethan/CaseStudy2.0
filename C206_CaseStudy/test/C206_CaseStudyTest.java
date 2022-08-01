@@ -96,6 +96,14 @@ public class C206_CaseStudytest {
 //		C206_CaseStudy.addItem(itemList, il5);
 //		C206_CaseStudy.addItem(itemList, il6);
 //		C206_CaseStudy.addItem(itemList, il7);
+		itemList.add(il1);
+		itemList.add(il2);
+		itemList.add(il3);
+		itemList.add(il4);
+		itemList.add(il5);
+		itemList.add(il6);
+		itemList.add(il7);
+		assertEquals("Test that Item arraylist size is 7", 7, itemList.size());
 //		
 //		assertEquals("Test that Item arraylist size is 7", 7, itemList.size());
 
@@ -129,14 +137,7 @@ public class C206_CaseStudytest {
 //		C206_CaseStudy.addItem(itemList, il6);
 //		C206_CaseStudy.addItem(itemList, il7);
 		
-		itemList.add(il1);
-		itemList.add(il2);
-		itemList.add(il3);
-		itemList.add(il4);
-		itemList.add(il5);
-		itemList.add(il6);
-		itemList.add(il7);
-		assertEquals("Test that Item arraylist size is 7", 7, itemList.size());
+//		assertEquals("Test that Item arraylist size is 7", 7, itemList.size());
 
 		// test if the expected output string same as the list of items retrieved from the SourceCentre
 		allBids = C206_CaseStudy.viewAllBids(bidList);
