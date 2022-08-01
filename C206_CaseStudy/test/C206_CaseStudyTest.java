@@ -96,6 +96,38 @@ public class C206_CaseStudytest {
 //		C206_CaseStudy.addItem(itemList, il5);
 //		C206_CaseStudy.addItem(itemList, il6);
 //		C206_CaseStudy.addItem(itemList, il7);
+//		
+//		assertEquals("Test that Item arraylist size is 7", 7, itemList.size());
+
+		// test if the expected output string same as the list of items retrieved from the SourceCentre
+		allItems = C206_CaseStudy.viewAllItems(itemList);
+		for (Item i : itemList) {
+			testOutput += ("\nItem Name: " + Item.getItemName() + "\nDescription: " + Item.getDescription() + "\nCategory: "
+					+ Item.getCategory() + "\nMinimum Bid Price: $" + Item.getMinimumBidPrice() + "\nBid Increment: $"
+					+ Item.getBidIncrement() + "\nAuction Start Date: " + Item.getAuctionStart() + "\n");
+		}
+		
+		assertEquals("Test that viewAllItems", testOutput, allItems);
+	}
+	
+	@Test
+	public void testviewAllBids() {
+		// Test if Item list is not null but empty -boundary
+		assertNotNull("Test if there is valid Bid arraylist to retrieve bid", bidList);
+
+		// test if the list of items retrieved from the SourceCentre is empty - boundary
+		String allBids = C206_CaseStudy.viewAllBids(bidList);
+		String testOutput = "";
+		assertEquals("Check that viewAllBids", testOutput, allBids);
+
+//		Given an empty list, after adding 2 items, test if the size of the list is 2 - normal
+//		C206_CaseStudy.addItem(itemList, il1);
+//		C206_CaseStudy.addItem(itemList, il2);
+//		C206_CaseStudy.addItem(itemList, il3);
+//		C206_CaseStudy.addItem(itemList, il4);
+//		C206_CaseStudy.addItem(itemList, il5);
+//		C206_CaseStudy.addItem(itemList, il6);
+//		C206_CaseStudy.addItem(itemList, il7);
 		
 		itemList.add(il1);
 		itemList.add(il2);
@@ -107,16 +139,14 @@ public class C206_CaseStudytest {
 		assertEquals("Test that Item arraylist size is 7", 7, itemList.size());
 
 		// test if the expected output string same as the list of items retrieved from the SourceCentre
-		allItems = C206_CaseStudy.viewAllItems(itemList);
-		for (Item i : itemList) {
-			testOutput += ("\nItem Name: " + Item.getItemName() + "\nDescription: " + Item.getDescription() + "\nCategory: "
-					+ Item.getCategory() + "\nMinimum Bid Price: $" + Item.getMinimumBidPrice() + "\nBid Increment: $"
-					+ Item.getBidIncrement() + "\nAuction Start Date: " + Item.getAuctionStart() + "\n");
+		allBids = C206_CaseStudy.viewAllBids(bidList);
+		for (Bid i : bidList) {
+//			testOutput += ("\nItem Name: " + Item.getItemName() + "\nDescription: " + Item.getDescription() + "\nCategory: "
+//					+ Item.getCategory() + "\nMinimum Bid Price: $" + Item.getMinimumBidPrice() + "\nBid Increment: $"
+//					+ Item.getBidIncrement() + "\nAuction Start Date: " + Item.getAuctionStart() + "\n");
 		}
-
-//		testOutput = String.format("%-10s %-30s %-10s %-10s %-20s %-20s %-20s\n", "AK47", "Stand Still for more Accuracy!", 69.0, today, null, 3, "Weapons");
-//		testOutput += String.format("%-10s %-30s %-10s %-10s %-20s %-20s %-20s\n", "Hammer", "Build build build", 25.0, today, null, 2, "tools");
-		assertEquals("Test that viewAllItems", testOutput, allItems);
+		
+		assertEquals("Test that viewAllBids", testOutput, allBids);
 	}
 	
 	
