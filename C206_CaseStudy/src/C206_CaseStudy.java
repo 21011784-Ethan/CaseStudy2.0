@@ -36,19 +36,19 @@ public class C206_CaseStudy {
 //		public Bid(String itemName, LocalDate auctionStart, LocalDate endDate, double bidIncrement,String category, int bidId,
 //				String sellerEmail, String buyerEmail, double bidPrice)
 		
-		bidList.add(new Bid("", today, null, 1.0 ,"Electronics",  0, "seller@ds.", null, 100.0));
-		
+		bidList.add(new Bid("", today, null, 1.0 ,"Electronics",  0, "seller@ds.", null, 100.0, 1));
+
 		
 //		public Item(String itemName, String description, double minimumBidPrice, LocalDate auctionStart, LocalDate endDate,
 //				int bidIncrement, String category)
 		
-		itemList.add(new Item("Glow Stick", "THE BEST STICK IN THE WORLD!", 10.0, today, null, 1, "Light utilities"));
-		itemList.add(new Item("AK47", "Stand Still for more Accuracy!", 69.0, today, null, 3, "Weapons"));
-		itemList.add(new Item("Hammer", "Build build build", 25.0, today, null, 2, "tools"));
-		itemList.add(new Item("Jett Toy Figure", "WATCH THIS!", 100.0, today, null, 10, "Toys"));
-		itemList.add(new Item("Darren Lee", "I am for sale!!", 10000.0, today, null, 10, "Human"));
-		itemList.add(new Item("Test Item", "I am for sale!!", 100.0, today, null, 10, "Electronics"));
-		itemList.add(new Item("Torch Glow", "Glow test", 10000.0, today, null, 10, "Electronics"));
+		itemList.add(new Item("Glow Stick", "THE BEST STICK IN THE WORLD!", 10.0, today, null, 1, "Light utilities",1));
+		itemList.add(new Item("AK47", "Stand Still for more Accuracy!", 69.0, today, null, 3, "Weapons",2));
+		itemList.add(new Item("Hammer", "Build build build", 25.0, today, null, 2, "tools",3));
+		itemList.add(new Item("Jett Toy Figure", "WATCH THIS!", 100.0, today, null, 10, "Toys",4));
+		itemList.add(new Item("Darren Lee", "I am for sale!!", 10000.0, today, null, 10, "Human",5));
+		itemList.add(new Item("Test Item", "I am for sale!!", 100.0, today, null, 10, "Electronics",6));
+		itemList.add(new Item("Torch Glow", "Glow test", 10000.0, today, null, 10, "Electronics",7));
 		
 		
 		AppControls();
