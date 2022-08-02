@@ -24,17 +24,19 @@ public class C206_CaseStudy {
 		
 		today = LocalDate.now();
 	
-		loginList.add(new UserAccount("Kyle", "admin", "admin@ds.", "pw", "valid"));
-		loginList.add(new UserAccount("Darren", "user", "user@ds.", "pw", "valid"));
-		loginList.add(new UserAccount("Johnny", "user", "user2@ds.", "pw", "valid"));
-		loginList.add(new UserAccount("John", "user", "user3@ds.", "pw", "valid"));
-		loginList.add(new UserAccount("Amy", "user", "invalid@ds.", "pw", "invalid"));
-		loginList.add(new UserAccount("Ben", "user", "block@ds.", "pw", "blocked"));
+		loginList.add(new UserAccount("Kyle", "admin", "admin@ds.", "pw", "valid", 0));
+		loginList.add(new UserAccount("Darren", "user", "user@ds.", "pw", "valid", 0));
+		loginList.add(new UserAccount("Johnny", "user", "user2@ds.", "pw", "valid", 0));
+		loginList.add(new UserAccount("John", "user", "user3@ds.", "pw", "valid", 0));
+		loginList.add(new UserAccount("Seller", "user", "seller@ds.", "pw", "valid", 0));
+		loginList.add(new UserAccount("Buyer", "user", "buyer@ds.", "pw", "valid", 0));
+		loginList.add(new UserAccount("Amy", "user", "invalid@ds.", "pw", "invalid", 0));
+		loginList.add(new UserAccount("Ben", "user", "block@ds.", "pw", "blocked", 0));
 		
-//		public Bid(String itemName, LocalDate auctionStart, LocalDate endDate, String category, int bidId,
+//		public Bid(String itemName, LocalDate auctionStart, LocalDate endDate, double bidIncrement,String category, int bidId,
 //				String sellerEmail, String buyerEmail, double bidPrice)
 		
-
+		bidList.add(new Bid("", today, null, 1.0 ,"Electronics",  0, "seller@ds.", null, 100.0));
 		
 		
 //		public Item(String itemName, String description, double minimumBidPrice, LocalDate auctionStart, LocalDate endDate,
@@ -45,7 +47,7 @@ public class C206_CaseStudy {
 		itemList.add(new Item("Hammer", "Build build build", 25.0, today, null, 2, "tools"));
 		itemList.add(new Item("Jett Toy Figure", "WATCH THIS!", 100.0, today, null, 10, "Toys"));
 		itemList.add(new Item("Darren Lee", "I am for sale!!", 10000.0, today, null, 10, "Human"));
-		itemList.add(new Item("", "I am for sale!!", 10000.0, today, null, 10, "Electronics"));
+		itemList.add(new Item("Test Item", "I am for sale!!", 100.0, today, null, 10, "Electronics"));
 		itemList.add(new Item("Torch Glow", "Glow test", 10000.0, today, null, 10, "Electronics"));
 		
 		
@@ -92,6 +94,8 @@ public class C206_CaseStudy {
 			} else if (option == 69) {
 				System.out.println(currentUser.size());
 				System.out.println(loginList.size());
+				
+				itemMenu(itemList);
 			}
 		}
 		System.out.println("Thank you for using our program.");
@@ -121,7 +125,7 @@ public class C206_CaseStudy {
 					Helper.line(70, "-");
 					System.out.println("Welcome " + us.getName() + ",");
 					adminMenu();
-					adminControls(0);
+					adminControls(loginList);
 				}
 				
 			} else if (email.equals(us.getEmail()) && password.equals(us.getPassword()) && (us.getStatus().equals("blocked"))) {
@@ -172,7 +176,7 @@ public class C206_CaseStudy {
 				String password = Helper.readString("Please type a valid password: ");
 				String name = Helper.readString("Please type your name: ");
 
-				loginList.add(new UserAccount(name, "user", email, password, "valid"));
+				loginList.add(new UserAccount(name, "user", email, password, "valid", 0));
 				System.out.println("Successfully registered.");
 			} else {
 				System.out.println("Failed to register.");
@@ -186,53 +190,65 @@ public class C206_CaseStudy {
 
 	public static void userControls(String email, String password) {
 		
-//		Helper.line(70, "-");
-//		System.out.println("Campus Online Auction Shop (COAS)");
-//		System.out.println("[YOU ARE A VALID USER]");
-//		Helper.line(70, "-");
 //		System.out.println("1. View All Biding Items");
 //		System.out.println("2. Search Item Name");
 //		System.out.println("3. Search Biding Items by Category");
-//		System.out.println("4. View my Bids");
-//		System.out.println("5. View my Items");
-//		System.out.println("6. Sell an Item");
-//		System.out.println("7. Change Password");
-//		System.out.println("8. Delete Account");
-//		System.out.println("9. Logout");
+//		System.out.println("4. Bid on Item");
+//		System.out.println("5. Sell an Item");
+//		System.out.println("6. View my Bids");
+//		System.out.println("7. View my Items");
+//		System.out.println("8. Change Password");
+//		System.out.println("9. Delete Account");
+//		System.out.println("10. Logout");
 	
 		
 		int userOption = 0;
-		while (userOption != 9) {
+		while (userOption != 10) {
 			userOption = Helper.readInt("Type User option: ");
 
 			if (userOption == 1) {
 				// view all biding items
 				viewAllItems(itemList);
+				userMenu();
 			} else if (userOption == 2) {
 				searchItem(itemList);
+				userMenu();
 
 			} else if (userOption == 3) {
 				searchCategory(itemList);
+				userMenu();
 
 			} else if (userOption == 4) {
-				
-
+				//Bid on Item
+				bidItem(itemList, currentUser);
 			} else if (userOption == 5) {
-
+				//Sell an Item
+				
 			} else if (userOption == 6) {
-
+				//View my Bids
+				
 			} else if (userOption == 7) {
-				//Change current password account
-				changePassword(currentUser, email,password);
-				userOption = 9;
+				//view My Items
+
 				
 			} else if (userOption == 8) {
+				//Change current password account
+				boolean changed = changePassword(currentUser, email,password);
+				
+				if (changed == true) {
+					System.out.println("Password Changed");
+					userOption = 10;
+				} else {
+					System.out.println("Password remains unchanged.");
+					userMenu();
+				}
+	
+			} else if (userOption == 9) {
 				// Delete Current Account
 
 				String confirmation = Helper.readString("Are you sure you want to DELETE your Account? (Y/N): ");
-
 				if (confirmation.equalsIgnoreCase("y")) {
-					userOption = 9;
+					userOption = 10;
 					deleteStatus = true;
 				} else {
 					System.out.println("Account has not been deleted.");
@@ -246,6 +262,66 @@ public class C206_CaseStudy {
 
 	}
 	
+	public static void adminControls(ArrayList<UserAccount> loginList) {
+		
+		System.out.println("Campus Online Auction Shop (COAS)");
+		System.out.println("[YOU ARE AN ADMINISTRATOR]");
+		Helper.line(70, "-");
+		System.out.println("1. Manage Items");
+		System.out.println("2. Manage Categories");
+		System.out.println("3. Manage Bids");
+		System.out.println("4. Manage Users Status");
+		System.out.println("5. Logout");
+		
+		int adminOption = 0;
+		while (adminOption != 5) {
+			adminOption = Helper.readInt("Type an option: ");
+			
+			if (adminOption == 1) {
+				//Manage Items
+				
+				
+			} else if (adminOption == 2) {
+				//Manage Categories
+			} else if (adminOption == 3) {
+				//Manage Bids
+				
+				
+			} else if (adminOption == 4) {
+				// Manage User Status
+				boolean found = false;
+				String email = Helper.readString("Type email you want to manage: ");
+				int status = 0;
+				for (int i = 0; i < loginList.size(); i++) {
+					if (loginList.get(i).getEmail().equals(email) && !loginList.get(i).getRole().equals("admin")) {
+						found = true;
+						System.out.println("1. Valid");
+						System.out.println("2. Blocked");
+						status = Helper.readInt("Select status for this user: ");
+
+						if (status == 1) {
+							loginList.get(i).setStatus("valid");
+							System.out.println("Changed to valid user");
+						} else if (status == 2) {
+							loginList.get(i).setStatus("blocked");
+							System.out.println("Changed to blocked user");
+						} else {
+							System.out.println("Invalid Status selection");
+						}
+					}
+				}
+				if (found == false) {
+					System.out.println("Email not found / Not allowed to be changed");
+				}
+				adminMenu();
+			}
+		}
+		logoutStatus = true;
+		System.out.println("Successfully Logged out!");
+	
+	}
+	
+
 	public static void deleteUser(ArrayList<UserAccount> currentUser, ArrayList<UserAccount> loginList) {
 
 		for (int z = 0; z < currentUser.size(); z++) {
@@ -255,8 +331,6 @@ public class C206_CaseStudy {
 					loginList.remove(i);
 					currentUser.remove(z);
 					System.out.println("Account has been successfully deleted.");
-					System.out.println(currentUser.size());
-					System.out.println(loginList.size());
 				}
 
 			}
@@ -272,7 +346,7 @@ public class C206_CaseStudy {
 	}
 
 	
-	public static void changePassword(ArrayList<UserAccount> loginList, String email, String password) {
+	public static boolean changePassword(ArrayList<UserAccount> loginList, String email, String password) {
 		boolean changed = false;
 		String newPassword = "";
 		password = Helper.readString("Please input your current password: ");
@@ -285,26 +359,16 @@ public class C206_CaseStudy {
 				changed = true;
 			} 
 		}
-		if (changed == true) {
-			System.out.println("Password Changed");
-		} else {
-			System.out.println("Password remains unchanged.");
-		}
+
+		return changed;
 		
 	}
 
 	
-	public static void adminControls(int option) {
-		option = 0;
-		while (option != 8) {
-			option = Helper.readInt("Type an option: ");
-		}
-
-	}
-	
 	public static void searchCategory(ArrayList<Item> itemList) {
 		// Search biding items by category
 
+		
 		String category = Helper.readString("Search category: ");
 		
 		Helper.line(70, "-");
@@ -320,13 +384,12 @@ public class C206_CaseStudy {
 			// System.out.println(Arrays.toString(categoryArray));
 
 			for (int j = 0; j < categoryArray.length; j++) {
-				if (category.strip().equalsIgnoreCase(categoryArray[j].strip())) {
+				if (category.strip().equalsIgnoreCase(categoryArray[j].strip()) || category.equalsIgnoreCase(item.getCategory())) {
 
 					System.out.println("Item Name: " + item.getItemName() + "\nDescription: " + item.getDescription()
 							+ "\nCategory: " + item.getCategory() + "\nMinimum Bid Price: $" + item.getMinimumBidPrice()
 							+ "\nBid Increment: $" + item.getBidIncrement() + "\nAuction Start Date: "
 							+ item.getAuctionStart());
-
 					System.out.println();
 
 				}
@@ -336,7 +399,9 @@ public class C206_CaseStudy {
 	}
 	
 	public static void searchItem(ArrayList<Item> itemList) {
-
+		
+		String output = "";
+		
 		String search = Helper.readString("Search Item Name: ");
 		
 		Helper.line(70, "-");
@@ -352,18 +417,14 @@ public class C206_CaseStudy {
 
 			for (int j = 0; j < itemArray.length; j++) {
 				if (search.strip().equalsIgnoreCase(itemArray[j].strip())) {
-
-					System.out.println("Item Name: " + item.getItemName() + "\nDescription: " + item.getDescription()
+					output += (("\n" + "Item Name: " + item.getItemName() + "\nDescription: " + item.getDescription()
 							+ "\nCategory: " + item.getCategory() + "\nMinimum Bid Price: $" + item.getMinimumBidPrice()
 							+ "\nBid Increment: $" + item.getBidIncrement() + "\nAuction Start Date: "
-							+ item.getAuctionStart());
-
+							+ item.getAuctionStart()) + "\n");
 					System.out.println();
-
 				}
 			}
-
-		}
+		}			System.out.println(output);
 		
 	}
 	
@@ -381,6 +442,35 @@ public class C206_CaseStudy {
 			System.out.println();
 		}
 
+	}
+	
+	public static void bidItem(ArrayList<Item> itemList, ArrayList<UserAccount> currentUser) {
+		
+		itemMenu(itemList);
+		
+		String search = Helper.readString("Type item name you want to bid on: ");
+		
+		for (int i = 0; i < itemList.size(); i++) {
+			Item item = itemList.get(i);
+			String[] itemArray = item.getItemName().split(" ");
+
+			for (int j = 0; j < itemArray.length; j++) {
+				if (search.strip().equalsIgnoreCase(itemArray[j].strip()) || search.equalsIgnoreCase(item.getItemName())) {
+
+					System.out.println("Item Name: " + item.getItemName() + "\nDescription: " + item.getDescription()
+							+ "\nCategory: " + item.getCategory() + "\nMinimum Bid Price: $" + item.getMinimumBidPrice()
+							+ "\nBid Increment: $" + item.getBidIncrement() + "\nAuction Start Date: "
+							+ item.getAuctionStart());
+					System.out.println();
+
+				} else {
+					System.out.println("Item not found.");
+				}
+			}
+
+		}
+		
+		
 	}
 
 	public static void menu() {
@@ -404,12 +494,13 @@ public class C206_CaseStudy {
 		System.out.println("1. View All Biding Items");
 		System.out.println("2. Search Item Name");
 		System.out.println("3. Search Biding Items by Category");
-		System.out.println("4. View my Bids");
-		System.out.println("5. View my Items");
-		System.out.println("6. Sell an Item");
-		System.out.println("7. Change Password");
-		System.out.println("8. Delete Account");
-		System.out.println("9. Logout");
+		System.out.println("4. Bid on Item");
+		System.out.println("5. Sell an Item");
+		System.out.println("6. View my Bids");
+		System.out.println("7. View my Items");
+		System.out.println("8. Change Password");
+		System.out.println("9. Delete Account");
+		System.out.println("10. Logout");
 	}
 	
 	public static void adminMenu() {
@@ -417,14 +508,20 @@ public class C206_CaseStudy {
 		System.out.println("Campus Online Auction Shop (COAS)");
 		System.out.println("[YOU ARE AN ADMINISTRATOR]");
 		Helper.line(70, "-");
-		System.out.println("1. View All Biding Items");
-		System.out.println("2. Search Biding Items by Category");
+		System.out.println("1. Manage Items");
+		System.out.println("2. Manage Categories");
 		System.out.println("3. Manage Bids");
-		System.out.println("4. View my Items");
-		System.out.println("5. View Transaction History");
-		System.out.println("6. Change Password");
-		System.out.println("7. Delete Account");
-		System.out.println("8. Logout");
+		System.out.println("4. Manage Users Status");
+		System.out.println("5. Logout");
+	}
+	
+	public static void itemMenu(ArrayList<Item> itemList) {
+		System.out.println("ALL ITEMS: ");
+		Helper.line(70, "-");
+		for (Item i : itemList) {
+			System.out.println(i.getItemName());
+		}
+		Helper.line(70, "-");
 	}
 	
 
