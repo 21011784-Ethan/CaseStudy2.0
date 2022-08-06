@@ -8,9 +8,10 @@ public class C206_CaseStudy {
 	public static ArrayList<UserAccount> loginList = new ArrayList<UserAccount>();
 	public static ArrayList<Bid> bidList = new ArrayList<Bid>();
 	public static ArrayList<Item> itemList = new ArrayList<Item>();
-	
+
 	public static boolean deleteStatus;
 	public static boolean logoutStatus;
+	public static boolean adminDeleteStatus;
 	public static LocalDate today;
 
 	public static void main(String[] args) {
@@ -37,7 +38,7 @@ public class C206_CaseStudy {
 //				String sellerEmail, String buyerEmail, double bidPrice)
 		
 		bidList.add(new Bid("", today, null, 1.0 ,"Electronics",  0, "seller@ds.", null, 100.0, 1));
-
+		
 		
 //		public Item(String itemName, String description, double minimumBidPrice, LocalDate auctionStart, LocalDate endDate,
 //				int bidIncrement, String category)
@@ -48,7 +49,7 @@ public class C206_CaseStudy {
 		itemList.add(new Item("Jett Toy Figure", "WATCH THIS!", 100.0, today, null, 10, "Toys",4));
 		itemList.add(new Item("Darren Lee", "I am for sale!!", 10000.0, today, null, 10, "Human",5));
 		itemList.add(new Item("Test Item", "I am for sale!!", 100.0, today, null, 10, "Electronics",6));
-		itemList.add(new Item("Torch Glow", "Glow test", 10000.0, today, null, 10, "Electronics",7));
+		itemList.add(new Item("Torch Glow", "Glow test", 10000.0, today, null, 10, "El rado",7));
 		
 		
 		AppControls();
@@ -68,6 +69,18 @@ public class C206_CaseStudy {
 			if (logoutStatus == true) {
 				deleteUser2(currentUser);
 				logoutStatus = false;
+			}
+			if (adminDeleteStatus == true) {
+				boolean deleted = adminDeleteUser(loginList);
+				if (deleted == true) {
+					System.out.println("User has been deleted.");
+					adminDeleteStatus = false;
+				} else {
+					System.out.println("Failed to delete user.");
+					adminDeleteStatus = false;
+				}
+				
+				adminDeleteStatus = false;
 			}
 
 			// start main program
@@ -109,6 +122,7 @@ public class C206_CaseStudy {
 			if (email.equals(us.getEmail()) && password.equals(us.getPassword()) && (us.getStatus().equals("valid"))) {
 				status = "valid";
 				
+				
 				if (us.getRole().equals("user")) {
 					System.out.println("Account Found... Login Success!");
 					Helper.line(70, "-");
@@ -125,7 +139,9 @@ public class C206_CaseStudy {
 					Helper.line(70, "-");
 					System.out.println("Welcome " + us.getName() + ",");
 					adminMenu();
-					adminControls(loginList);
+					adminControls(loginList ,email,password);
+					
+					
 				}
 				
 			} else if (email.equals(us.getEmail()) && password.equals(us.getPassword()) && (us.getStatus().equals("blocked"))) {
@@ -184,7 +200,6 @@ public class C206_CaseStudy {
 		} else if (emailFound == true) {
 			System.out.println("Email already Exists. Please use another Email.");
 		}
-	
 
 	}
 
@@ -221,16 +236,43 @@ public class C206_CaseStudy {
 			} else if (userOption == 4) {
 				//Bid on Item
 				bidItem(itemList, currentUser);
+				userMenu();
 			} else if (userOption == 5) {
-				//Sell an Item
+				// Add/Sell an Item
 				
+//				public Item(String itemName, String description, double minimumBidPrice, LocalDate auctionStart, LocalDate endDate,
+//						int bidIncrement, String category, int itemId) {
+				int lastNumber = 0;
+				boolean foundItem = false;
+				String itemAdd = Helper.readString("Type item name you want to add: ");
+				
+				for (int i = 0; i < itemList.size(); i++) {
+					if (itemList.get(i).getItemName().equals(itemAdd)) {
+						foundItem = true;
+					}
+					lastNumber = itemList.get(itemList.size()-1).getItemId();
+				}
+				if (foundItem == false) {
+					
+					String description = Helper.readString("Type item description: ");
+					double minimumBidPrice = Helper.readDouble("Type minimum bid price: ");
+					double bidIncrement = Helper.readDouble("Type bid Increment: ");
+					LocalDate endDate = null;
+					String category = Helper.readString("Type category name for this item: ");
+					
+					itemList.add(new Item(itemAdd, description, minimumBidPrice, today, endDate, bidIncrement, category, lastNumber++));
+					
+				}
+
+				
+				userMenu();
 			} else if (userOption == 6) {
 				//View my Bids
-				
+				userMenu();
 			} else if (userOption == 7) {
 				//view My Items
 
-				
+				userMenu();
 			} else if (userOption == 8) {
 				//Change current password account
 				boolean changed = changePassword(currentUser, email,password);
@@ -262,16 +304,7 @@ public class C206_CaseStudy {
 
 	}
 	
-	public static void adminControls(ArrayList<UserAccount> loginList) {
-		
-		System.out.println("Campus Online Auction Shop (COAS)");
-		System.out.println("[YOU ARE AN ADMINISTRATOR]");
-		Helper.line(70, "-");
-		System.out.println("1. Manage Items");
-		System.out.println("2. Manage Categories");
-		System.out.println("3. Manage Bids");
-		System.out.println("4. Manage Users Status");
-		System.out.println("5. Logout");
+	public static void adminControls(ArrayList<UserAccount> loginList, String email, String password) {
 		
 		int adminOption = 0;
 		while (adminOption != 5) {
@@ -279,46 +312,158 @@ public class C206_CaseStudy {
 			
 			if (adminOption == 1) {
 				//Manage Items
-				
-				
+				manageItems(itemList);
+				adminMenu();
 			} else if (adminOption == 2) {
 				//Manage Categories
+				manageCategory(itemList);
+				adminMenu();
 			} else if (adminOption == 3) {
 				//Manage Bids
 				
-				
+				adminMenu();
 			} else if (adminOption == 4) {
 				// Manage User Status
-				boolean found = false;
-				String email = Helper.readString("Type email you want to manage: ");
-				int status = 0;
-				for (int i = 0; i < loginList.size(); i++) {
-					if (loginList.get(i).getEmail().equals(email) && !loginList.get(i).getRole().equals("admin")) {
-						found = true;
-						System.out.println("1. Valid");
-						System.out.println("2. Blocked");
-						status = Helper.readInt("Select status for this user: ");
+				int choice = 0;
+				System.out.println("1. Delete users");
+				System.out.println("2. Change user Status (BLOCK USERS)");
+				System.out.println("3. View all Users");
+				choice = Helper.readInt("Please input your choice of action: ");
 
-						if (status == 1) {
-							loginList.get(i).setStatus("valid");
-							System.out.println("Changed to valid user");
-						} else if (status == 2) {
-							loginList.get(i).setStatus("blocked");
-							System.out.println("Changed to blocked user");
-						} else {
-							System.out.println("Invalid Status selection");
-						}
+				if (choice == 1) {				
+
+						adminDeleteStatus = true;
+						adminOption = 5;
+
+				} else if (choice == 2) {
+					changeUserStatus();
+				}else if (choice == 3) {
+					for (UserAccount us : loginList) {
+						System.out.println();
+						System.out.println("Name: " + us.getName());
+						System.out.println("Email: " + us.getEmail());
 					}
+				} else {
+					System.out.println("Invalid choice.");
 				}
-				if (found == false) {
-					System.out.println("Email not found / Not allowed to be changed");
-				}
-				adminMenu();
 			}
 		}
 		logoutStatus = true;
-		System.out.println("Successfully Logged out!");
+		
+		if (adminDeleteStatus == false) {
+			System.out.println("Successfully Logged out!");
+		}
+
 	
+	}
+	
+	public static boolean adminDeleteUser(ArrayList<UserAccount> loginList) {
+
+		boolean deleted = false;
+		
+		String email = Helper.readString("Type email you want to Delete: ");
+		for (int i = 0; i < loginList.size(); i++) {
+			UserAccount list = loginList.get(i);
+			if (email.equals(list.getEmail()) && list.getRole().equals("user")) {
+				loginList.remove(list);
+				deleted = true;
+			}
+		}
+		
+		return deleted;
+	}
+
+	public static void changeUserStatus() {
+		boolean found = false;
+		String email = Helper.readString("Type email you want to manage: ");
+		int status = 0;
+		for (int i = 0; i < loginList.size(); i++) {
+			if (loginList.get(i).getEmail().equals(email) && !loginList.get(i).getRole().equals("admin")) {
+				found = true;
+				System.out.println("1. Valid");
+				System.out.println("2. Blocked");
+				status = Helper.readInt("Select status for this user: ");
+
+				if (status == 1) {
+					loginList.get(i).setStatus("valid");
+					System.out.println("Changed to valid user");
+				} else if (status == 2) {
+					loginList.get(i).setStatus("blocked");
+					System.out.println("Changed to blocked user");
+				} else {
+					System.out.println("Invalid Status selection");
+				}
+			}
+		}
+		if (found == false) {
+			System.out.println("Email not found / Not allowed to be changed");
+		}
+	}
+	
+	public static void manageItems(ArrayList<Item> itemList) {
+		boolean itemFound = false;
+		int id = 0;
+		int status = 0;
+		String itemName = Helper.readString("Type item name you want to Manage: ");
+		
+		
+		for (int i = 0; i < itemList.size(); i++) {
+			if (itemList.get(i).getItemName().equalsIgnoreCase(itemName)) {
+				itemFound = true;
+				System.out.println("1. Delete item");
+				status = Helper.readInt("Type selection: ");
+				
+				if (status == 1) {
+					System.out.println("Item: " + itemList.get(i).getItemName() + " has been removed.");
+					itemList.remove(i);
+				} else {
+					System.out.println("Invalid Selection.");
+				}
+			}
+		
+		}
+
+		if (itemFound == false) {
+			System.out.println("Item is not found.");
+		}
+		
+	}
+	
+	public static boolean manageCategory(ArrayList<Item> itemList) {
+		boolean categoryFound = false;
+		String category = "";
+		int option = 0;
+		System.out.println("1. Delete an Item");
+		System.out.println("2. View All categories");
+		option = Helper.readInt("Type the option you want to select: ");
+
+		if (option == 1) {
+			category = Helper.readString("Type item Category you want to Delete: ");
+			for (int i = 0; i < itemList.size(); i++) {
+				if (itemList.get(i).getCategory().equalsIgnoreCase(category)) {
+					categoryFound = true;
+
+				}
+
+				if (categoryFound == true) {
+					System.out.println("Category: " + itemList.get(i).getCategory() + " has been removed.");
+					itemList.remove(i);
+				}
+			}
+
+		} else if (option == 2) {
+			categoryFound = true;
+			for (int i = 0; i < itemList.size(); i++) {
+				System.out.println(itemList.get(i).getCategory());
+			}
+		} else {
+			System.out.println("Invalid Option");
+		}
+
+		if (categoryFound == false) {
+			System.out.println("Category is not found.");
+		}
+		return categoryFound;
 	}
 	
 
@@ -344,7 +489,6 @@ public class C206_CaseStudy {
 			currentUser.remove(z);
 		}
 	}
-
 	
 	public static boolean changePassword(ArrayList<UserAccount> loginList, String email, String password) {
 		boolean changed = false;
@@ -446,29 +590,56 @@ public class C206_CaseStudy {
 	
 	public static void bidItem(ArrayList<Item> itemList, ArrayList<UserAccount> currentUser) {
 		
+		boolean itemFound = false;
+		LocalDate endDate = null;
 		itemMenu(itemList);
 		
-		String search = Helper.readString("Type item name you want to bid on: ");
+		int itemId = Helper.readInt("Type item ID of item you want to BID: ");
 		
-		for (int i = 0; i < itemList.size(); i++) {
-			Item item = itemList.get(i);
-			String[] itemArray = item.getItemName().split(" ");
-
-			for (int j = 0; j < itemArray.length; j++) {
-				if (search.strip().equalsIgnoreCase(itemArray[j].strip()) || search.equalsIgnoreCase(item.getItemName())) {
-
-					System.out.println("Item Name: " + item.getItemName() + "\nDescription: " + item.getDescription()
-							+ "\nCategory: " + item.getCategory() + "\nMinimum Bid Price: $" + item.getMinimumBidPrice()
-							+ "\nBid Increment: $" + item.getBidIncrement() + "\nAuction Start Date: "
-							+ item.getAuctionStart());
-					System.out.println();
-
-				} else {
-					System.out.println("Item not found.");
-				}
+		for (int z = 0; z < itemList.size(); z++) {
+			if (itemList.get(z).getItemId() == itemId) {
+				Item item = itemList.get(z);
+				
+				
+				//bidList.add(new Bid(item.getItemName(), today, endDate, item.getBidIncrement(), item.getCategory(),  ))
+				
+				
+				
+				
+//				public Bid(String itemName, LocalDate auctionStart, LocalDate endDate, double bidIncrement,String category, int bidId,
+//				String sellerEmail, String buyerEmail, double bidPrice)
+		
+				bidList.add(new Bid("", today, null, 1.0 ,"Electronics",  0, "seller@ds.", null, 100.0, 1));
+				
+				
+				
+				
 			}
-
 		}
+		
+		if (itemFound == false) {
+			System.out.println("Item ID is not found.");
+		}
+		
+//		for (int i = 0; i < itemList.size(); i++) {
+//			Item item = itemList.get(i);
+//			String[] itemArray = item.getItemName().split(" ");
+//
+//			for (int j = 0; j < itemArray.length; j++) {
+//				if (search.strip().equalsIgnoreCase(itemArray[j].strip()) || search.equalsIgnoreCase(item.getItemName())) {
+//
+//					System.out.println("Item Name: " + item.getItemName() + "\nDescription: " + item.getDescription()
+//							+ "\nCategory: " + item.getCategory() + "\nMinimum Bid Price: $" + item.getMinimumBidPrice()
+//							+ "\nBid Increment: $" + item.getBidIncrement() + "\nAuction Start Date: "
+//							+ item.getAuctionStart());
+//					System.out.println();
+//
+//				} else {
+//					System.out.println("Item not found.");
+//				}
+//			}
+//
+//		}
 		
 		
 	}
@@ -508,10 +679,10 @@ public class C206_CaseStudy {
 		System.out.println("Campus Online Auction Shop (COAS)");
 		System.out.println("[YOU ARE AN ADMINISTRATOR]");
 		Helper.line(70, "-");
-		System.out.println("1. Manage Items");
-		System.out.println("2. Manage Categories");
+		System.out.println("1. Manage Items (ADD/SELL ALL ITEMS)");
+		System.out.println("2. Manage Categories (ADD/DELETE ALL CATEGORIES)");
 		System.out.println("3. Manage Bids");
-		System.out.println("4. Manage Users Status");
+		System.out.println("4. Manage Users (DELETE/BLOCK/VIEW ALL USERS)");
 		System.out.println("5. Logout");
 	}
 	

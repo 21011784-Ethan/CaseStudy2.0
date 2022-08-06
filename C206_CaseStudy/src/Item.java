@@ -11,6 +11,18 @@ public class Item{
 	private String category;
 	private int itemId;
 	
+	public Item(String itemName,  String description, double minimumBidPrice,  LocalDate auctionStart, LocalDate endDate,
+			double bidIncrement2, String category, int itemId) {
+		this.itemName = itemName;
+		this.description = description;
+		this.minimumBidPrice = minimumBidPrice;
+		this.auctionStart = auctionStart;
+		this.endDate = endDate;
+		this.bidIncrement = bidIncrement2;
+		this.category = category;
+		this.itemId = itemId;
+	}
+	
 	public Item(String itemName, LocalDate auctionStart, LocalDate endDate,double bidIncrement, String category, int itemId) {
 		this.itemName = itemName;
 		this.description = "";
@@ -22,17 +34,7 @@ public class Item{
 		this.itemId = itemId;
 	}
 	
-	public Item(String itemName, String description, double minimumBidPrice, LocalDate auctionStart, LocalDate endDate,
-			int bidIncrement, String category, int itemId) {
-		this.itemName = itemName;
-		this.description = description;
-		this.minimumBidPrice = minimumBidPrice;
-		this.auctionStart = auctionStart;
-		this.endDate = endDate;
-		this.bidIncrement = bidIncrement;
-		this.category = category;
-		this.itemId = itemId;
-	}
+
 
 	public String getItemName() {
 		return itemName;
